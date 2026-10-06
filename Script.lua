@@ -1,215 +1,225 @@
--- =================================================================
--- INFO PEMBUATAN: bruk ontop
--- VERSI: 1.0.2 (Fixed Path Update)
--- TARGET MAP: Indo Glarity Reborn (Maxgen Delivery Job)
--- BASE SCRIPT: Delta Exploit Mobile (Floating GUI Menu)
--- BINDING STATUS: 100% Terkunci ke Workspace.Ekonomi.ActiveJobs
--- =================================================================
+-- Owner: Bruk Ontop
+-- Executed via Delta / Mobile Executor
 
+-- Auto Run Infinite Yield di Background
+task.spawn(function()
+    pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end)
+end)
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+
+-- Clean Up Old UI
+if LocalPlayer.PlayerGui:FindFirstChild("BrukOntop_Hub") then
+    LocalPlayer.PlayerGui["BrukOntop_Hub"]:Destroy()
+end
+
+-- ScreenGui Setup
 local ScreenGui = Instance.new("ScreenGui")
-local ToggleButton = Instance.new("TextButton")
-local MainFrame = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local InfoLabel = Instance.new("TextLabel")
-local AutoFarmBtn = Instance.new("TextButton")
-
-ScreenGui.Name = "BrukOntopGlarityV5"
-ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "BrukOntop_Hub"
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ResetOnSpawn = false
 
--- SETUP GUI MELAYANG (FLOATING MENU ACTION BUTTON)
-ToggleButton.Name = "ToggleButton"
-ToggleButton.Parent = ScreenGui
-ToggleButton.Position = UDim2.new(0.05, 0, 0.2, 0)
-ToggleButton.Size = UDim2.new(0, 60, 0, 60)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-ToggleButton.Text = "Bruk"
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.Font = Enum.Font.SourceSansBold
-ToggleButton.TextSize = 16
-
-local ToggleCorner = Instance.new("UICorner")
-ToggleCorner.CornerRadius = UDim.new(1, 0)
-ToggleCorner.Parent = ToggleButton
-
--- PANEL MENU UTAMA
+-- Main Window (Tema H42 Hub)
+local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
-MainFrame.Size = UDim2.new(0, 250, 0, 200)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Visible = false
+MainFrame.BackgroundColor3 = Color3.fromRGB(24, 26, 36)
+MainFrame.BorderSizePixel = 0
+MainFrame.Position = UDim2.new(0.3, 0, 0.25, 0)
+MainFrame.Size = UDim2.new(0, 400, 0, 230)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
-local FrameCorner = Instance.new("UICorner")
-FrameCorner.CornerRadius = UDim.new(0, 10)
-FrameCorner.Parent = MainFrame
+-- Corner Radius Window
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
 
+-- Top Bar Title
+local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-Title.Text = "bruk ontop - V1.0.2"
-Title.TextColor3 = Color3.fromRGB(255, 215, 0)
+Title.Text = "BRUK ONTOP 1.0.0 (BETA) | By: Bruk Ontop"
+Title.TextColor3 = Color3.fromRGB(220, 225, 240)
+Title.Position = UDim2.new(0.34, 0, 0.04, 0)
+Title.Size = UDim2.new(0.62, 0, 0.12, 0)
 Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 18
+Title.TextSize = 13
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
-InfoLabel.Parent = MainFrame
-InfoLabel.Position = UDim2.new(0, 0, 0.25, 0)
-InfoLabel.Size = UDim2.new(1, 0, 0, 30)
-InfoLabel.BackgroundTransparency = 1
-InfoLabel.Text = "Fixed Ekonomi Folder Integration"
-InfoLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-InfoLabel.Font = Enum.Font.SourceSans
-InfoLabel.TextSize = 13
+-- Sidebar Panel (Kiri)
+local Sidebar = Instance.new("Frame")
+Sidebar.Parent = MainFrame
+Sidebar.BackgroundColor3 = Color3.fromRGB(16, 17, 24)
+Sidebar.BorderSizePixel = 0
+Sidebar.Size = UDim2.new(0, 125, 1, 0)
 
-AutoFarmBtn.Parent = MainFrame
-AutoFarmBtn.Position = UDim2.new(0.1, 0, 0.5, 0)
-AutoFarmBtn.Size = UDim2.new(0.8, 0, 0, 50)
-AutoFarmBtn.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
-AutoFarmBtn.Text = "Auto Farm Maxgen: OFF"
-AutoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-AutoFarmBtn.Font = Enum.Font.SourceSansBold
-AutoFarmBtn.TextSize = 16
+local SidebarCorner = Instance.new("UICorner")
+SidebarCorner.CornerRadius = UDim.new(0, 8)
+SidebarCorner.Parent = Sidebar
 
-local BtnCorner = Instance.new("UICorner")
-BtnCorner.CornerRadius = UDim.new(0, 8)
-BtnCorner.Parent = AutoFarmBtn
+-- Tab Category Button
+local TabMaxgen = Instance.new("TextButton")
+TabMaxgen.Parent = Sidebar
+TabMaxgen.Text = "Auto Farm Maxgen"
+TabMaxgen.BackgroundColor3 = Color3.fromRGB(45, 65, 160)
+TabMaxgen.TextColor3 = Color3.fromRGB(255, 255, 255)
+TabMaxgen.Position = UDim2.new(0.06, 0, 0.08, 0)
+TabMaxgen.Size = UDim2.new(0.88, 0, 0.18, 0)
+TabMaxgen.Font = Enum.Font.SourceSansBold
+TabMaxgen.TextSize = 11
 
-ToggleButton.MouseButton1Click:Connect(function()
-    MainFrame.Visible = not MainFrame.Visible
-end)
+local TabCorner = Instance.new("UICorner")
+TabCorner.CornerRadius = UDim.new(0, 6)
+TabCorner.Parent = TabMaxgen
 
--- LOGIKA INTI AUTOPILOT PEKERJAAN (CORE ENGINE V5)
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local LocalPlayer = Players.LocalPlayer
-_G.BrukOntopActive = false
+-- Content Container (Kanan)
+local Content = Instance.new("Frame")
+Content.Parent = MainFrame
+Content.BackgroundTransparency = 1
+Content.Position = UDim2.new(0.34, 0, 0.2, 0)
+Content.Size = UDim2.new(0.63, 0, 0.75, 0)
 
--- Membuat Kendaraan Menembus Semua Rintangan/Tembok Map (No-Clip Hambatan)
-local function SetNoClipMode(vehicleModel)
-    for _, part in pairs(vehicleModel:GetDescendants()) do
+-- Content Header Text
+local SectionText = Instance.new("TextLabel")
+SectionText.Parent = Content
+SectionText.Text = "— PREMIUM PLAYER —"
+SectionText.TextColor3 = Color3.fromRGB(235, 180, 50)
+SectionText.Size = UDim2.new(1, 0, 0, 20)
+SectionText.Font = Enum.Font.SourceSansBold
+SectionText.TextSize = 12
+
+-- Toggle Button (Otomatis Farm)
+local BtnAuto = Instance.new("TextButton")
+BtnAuto.Parent = Content
+BtnAuto.Text = "Otomatis Farm Maxgen : OFF"
+BtnAuto.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+BtnAuto.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnAuto.Position = UDim2.new(0, 0, 0.25, 0)
+BtnAuto.Size = UDim2.new(1, 0, 0, 32)
+BtnAuto.Font = Enum.Font.SourceSansBold
+BtnAuto.TextSize = 12
+
+local BtnAutoCorner = Instance.new("UICorner")
+BtnAutoCorner.CornerRadius = UDim.new(0, 6)
+BtnAutoCorner.Parent = BtnAuto
+
+-- Teleport Button (TP Manual)
+local BtnTP = Instance.new("TextButton")
+BtnTP.Parent = Content
+BtnTP.Text = "TP ke Lokasi Maxgen"
+BtnTP.BackgroundColor3 = Color3.fromRGB(35, 40, 58)
+BtnTP.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnTP.Position = UDim2.new(0, 0, 0.55, 0)
+BtnTP.Size = UDim2.new(1, 0, 0, 32)
+BtnTP.Font = Enum.Font.SourceSansBold
+BtnTP.TextSize = 12
+
+local BtnTPCorner = Instance.new("UICorner")
+BtnTPCorner.CornerRadius = UDim.new(0, 6)
+BtnTPCorner.Parent = BtnTP
+
+---------------------------------------------------------
+-- LOGIC SYSTEM
+---------------------------------------------------------
+
+local isRunning = false
+
+-- Safe Noclip khusus karakter
+local function applyNoclip(char)
+    for _, part in pairs(char:GetDescendants()) do
         if part:IsA("BasePart") then
             part.CanCollide = false
         end
     end
 end
 
--- Fungsi Mengemudi/Teleport Otomatis Menggunakan Metode Tween Gerak Halus
-local function DriveAutopilotTo(targetPosition, travelSpeed)
-    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local targetMovingPart = character:FindFirstChild("HumanoidRootPart")
+-- Fungsi Jalan Halus (Tween)
+local function tweenTo(targetCFrame, speed)
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local root = char:WaitForChild("HumanoidRootPart")
     
-    if character:FindFirstChild("Humanoid") and character.Humanoid.SeatPart then
-        local currentCar = character.Humanoid.SeatPart.Parent
-        targetMovingPart = currentCar.PrimaryPart or character.Humanoid.SeatPart
-        SetNoClipMode(currentCar)
-    end
+    applyNoclip(char)
     
-    if targetMovingPart then
-        local distance = (targetMovingPart.Position - targetPosition).Magnitude
-        local duration = distance / travelSpeed
-        local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-        local tween = TweenService:Create(targetMovingPart, info, {CFrame = CFrame.new(targetPosition)})
-        tween:Play()
-        tween.Completed:Wait()
-    end
+    local distance = (root.Position - targetCFrame.Position).Magnitude
+    local duration = distance / (speed or 40)
+    
+    local tween = TweenService:Create(root, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame})
+    tween:Play()
+    tween.Completed:Wait()
 end
 
--- Deteksi dan Ambil Mobil Kerja yang Muncul di SpeakerFolder
-local function GetSpawnedJobCar()
-    local speakerFolder = workspace:FindFirstChild("SpeakerFolder")
-    if speakerFolder then
-        for _, child in pairs(speakerFolder:GetChildren()) do
-            if string.find(child.Name, "SpawnedOutside") then
-                return child
+-- Cari Lokasi Tanda Kuning (DeliveryBeam / DummyTarget / BedilPusat)
+local function findJobTarget()
+    local beam = Workspace:FindFirstChild("DeliveryBeam", true)[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)[span_2](start_span)[span_2](end_span)
+    if beam and beam:IsA("Beam") and beam.Attachment1 then
+        return beam.Attachment1.WorldPosition
+    end
+
+    for _, obj in pairs(Workspace:GetChildren()) do
+        if string.find(obj.Name, "DummyTarget") and obj:IsA("BasePart") then[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span)
+            return obj.Position
+        end
+    end
+
+    local ekonomi = Workspace:FindFirstChild("Ekonomi")[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+    if ekonomi then
+        local bedil = ekonomi:FindFirstChild("BedilPusat")[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
+        if bedil and bedil:FindFirstChild("DeliveryTargets") then[span_12](start_span)[span_12](end_span)
+            local targets = bedil.DeliveryTargets:GetChildren()[span_13](start_span)[span_13](end_span)
+            if #targets > 0 then
+                return targets[1].Position
             end
         end
     end
+
     return nil
 end
 
--- LOOP UTAMA FISIK AUTO FARM
-task.spawn(function()
-    while true do
-        task.wait(0.5)
-        if _G.BrukOntopActive then
-            pcall(function()
-                local character = LocalPlayer.Character
-                if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-                
-                -- LANGKAH 1: Teleport Fisik langsung ke atas lingkaran merah berdasarkan jalur Dex asli
-                local ekonomiFolder = workspace:FindFirstChild("Ekonomi")
-                if ekonomiFolder and ekonomiFolder:FindFirstChild("ActiveJobs") and ekonomiFolder.ActiveJobs:FindFirstChild("Job") then
-                    local jobPart = ekonomiFolder.ActiveJobs.Job
-                    -- Dipindahkan tepat ke atas lingkaran merah agar terinjak sempurna oleh game
-                    DriveAutopilotTo(jobPart.Position + Vector3.new(0, 2, 0), 150)
-                    task.wait(2) -- Jeda agar sistem mendeteksi injakan fisik dan memunculkan kendaraan
-                end
-                
-                -- LANGKAH 2: Cari Mobil Kerja dan Paksa Masuk ke Kursi Sopir Otomatis
-                local myCar = GetSpawnedJobCar()
-                if myCar then
-                    local seat = myCar:FindFirstChildOfClass("VehicleSeat") or myCar:FindFirstChild("DriveSeat") or myCar:FindFirstChildOfClass("Seat")
-                    if seat then
-                        seat:Sit(character:FindFirstChild("Humanoid"))
-                        task.wait(1.2)
-                    end
-                end
-                
-                -- LANGKAH 3: Melacak Titik Tujuan Tanda Kuning Berdasarkan Objek Penunjuk Jalan
-                local finalTargetPos = nil
-                
-                -- Metode Utama: Membaca Data langsung dari folder Workspace.Ekonomi.ActiveJobs.DeliveryTargets
-                if ekonomiFolder and ekonomiFolder:FindFirstChild("ActiveJobs") and ekonomiFolder.ActiveJobs:FindFirstChild("DeliveryTargets") then
-                    local targetsFolder = ekonomiFolder.ActiveJobs.DeliveryTargets
-                    local targetObj = targetsFolder:FindFirstChild("Target") or targetsFolder:FindFirstChild("Finish")
-                    if targetObj and targetObj:IsA("BasePart") then
-                        finalTargetPos = targetObj.Position
-                    end
-                end
-                
-                -- Metode Cadangan: Mencari DummyTarget dinamis jika folder utama terlambat memuat
-                if not finalTargetPos then
-                    for _, obj in pairs(workspace:GetChildren()) do
-                        if string.find(obj.Name, "DummyTarget") and obj:IsA("BasePart") then
-                            finalTargetPos = obj.Position
-                            break
-                        end
-                    end
-                end
-                
-                -- Jika Posisi Titik Kuning Ditemukan, Mulai Mengemudi Otomatis Menembus Map
-                if finalTargetPos then
-                    DriveAutopilotTo(finalTargetPos, 95) -- Kecepatan autopilot menembus map darat
-                    task.wait(3.5) -- Menunggu sistem gaji memproses pembayaran
-                end
-                
-                -- LANGKAH 4: Deteksi Pembayaran Sukses Melalui Jalur GUI Notifikasi
-                local notifGui = LocalPlayer.PlayerGui:FindFirstChild("Notification")
-                if notifGui and notifGui:FindFirstChild("SUKSES") then
-                    if notifGui.SUKSES.Visible == true or notifGui.SUKSES.BackgroundTransparency < 1 then
-                        task.wait(1)
-                        local oldCar = GetSpawnedJobCar()
-                        if oldCar then
-                            oldCar:Destroy()
-                        end
-                    end
-                end
-                task.wait(1.5)
-            end)
-        end
+-- Teleport Manual ke Target
+BtnTP.MouseButton1Click:Connect(function()
+    local targetPos = findJobTarget()
+    if targetPos then
+        tweenTo(CFrame.new(targetPos + Vector3.new(0, 3, 0)), 60)
     end
 end)
 
--- TRIGER TOMBOL AKTIFASI DI LAYAR PANEL MENU HP
-AutoFarmBtn.MouseButton1Click:Connect(function()
-    _G.BrukOntopActive = not _G.BrukOntopActive
-    if _G.BrukOntopActive then
-        AutoFarmBtn.Text = "Auto Farm Maxgen: ON"
-        AutoFarmBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+-- Loop Farm Otomatis
+local function startTikTokAutoJob()
+    task.spawn(function()
+        while isRunning do
+            local targetPos = findJobTarget()
+            
+            if targetPos then
+                tweenTo(CFrame.new(targetPos + Vector3.new(0, 3, 0)), 40)
+                task.wait(math.random(15, 25) / 10)
+            else
+                local ekonomi = Workspace:FindFirstChild("Ekonomi")[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)[span_16](start_span)[span_16](end_span)
+                if ekonomi and ekonomi:FindFirstChild("BedilPusat") then[span_17](start_span)[span_17](end_span)[span_18](start_span)[span_18](end_span)
+                    local startPoint = ekonomi.BedilPusat:FindFirstChild("Job") or ekonomi.BedilPusat:FindFirstChild("Finish")[span_19](start_span)[span_19](end_span)
+                    if startPoint then
+                        tweenTo(startPoint:GetPivot(), 35)
+                    end
+                end
+                task.wait(2)
+            end
+        end
+    end)
+end
+
+-- Toggle Switch Button
+BtnAuto.MouseButton1Click:Connect(function()
+    isRunning = not isRunning
+    if isRunning then
+        BtnAuto.BackgroundColor3 = Color3.fromRGB(40, 180, 40)
+        BtnAuto.Text = "Otomatis Farm Maxgen : ON"
+        startTikTokAutoJob()
     else
-        AutoFarmBtn.Text = "Auto Farm Maxgen: OFF"
-        AutoFarmBtn.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+        BtnAuto.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+        BtnAuto.Text = "Otomatis Farm Maxgen : OFF"
     end
 end)
